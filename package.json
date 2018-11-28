@@ -1,0 +1,34 @@
+{
+  "name": "farm-service",
+  "version": "1.0.0",
+  "description": "Farm microservice",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "nodemon --legacy-watch src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/farmchain/farm-service.git"
+  },
+  "keywords": [
+    "farm-service",
+    "fexpress",
+    "mongoose",
+    "microservice",
+    "api"
+  ],
+  "author": "giuppi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/farmchain/farm-service/issues"
+  },
+  "homepage": "https://gitlab.com/farmchain/farm-service#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongoose": "^5.3.14",
+    "nodemon": "^1.18.7"
+  }
+}
