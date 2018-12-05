@@ -22,7 +22,7 @@ const connect = (options, mediator) => {
 
         
         //Bind connection to error event (to get notification of connection errors)
-        db.on('error', () => {mediator.emit('db.error',db)});
+        db.on('error', (err) => {mediator.emit('db.error',err)});
         
         mediator.emit('db.ready',db)
 
