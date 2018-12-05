@@ -12,7 +12,6 @@ const start  = (options) => {
         if(!options.port){
             reject(new Error('Non è disponibile nessuna porta'))
         }
-
         const app = express()
 
         // morgan gestisce il logging sul web server (formati dev, short ... )
@@ -25,7 +24,7 @@ const start  = (options) => {
             reject(new Error('Something went wrong!, err:' + err))
             res.status(500).send('Something went wrong!')
         })
-
+        
         const farmApi = require('../api/farms')(options)
         app.use('/farm',farmApi)
 

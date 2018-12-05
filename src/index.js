@@ -7,6 +7,7 @@ const mediator = new EventEmitter()
 
 
 mediator.on('db.ready', async (db) => {
+    console.error('Database started!!')
     var repo = await repository.connect(db);
     var app = await server.start({
         port:  config.serverSettings.port,
