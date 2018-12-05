@@ -17,8 +17,8 @@ mediator.on('db.ready', async (db) => {
       })
 })
 
-mediator.on('db.error', () => {
-    console.error('Errore nello start del db')
+mediator.on('db.error', (err) => {
+    console.error('Errore nello start del db '+err)
   })
 
 
