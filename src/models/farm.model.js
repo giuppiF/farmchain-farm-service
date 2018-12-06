@@ -29,6 +29,11 @@ const joiWebSiteSchema = Joi.object().keys({
         })
 })
 
+const joiLotSchema = Joi.object().keys({
+    name: Joi.string(),
+    description: Joi.string(),
+})
+
 const joiAdvSchema = Joi.object().keys({
     products: Joi.array().items({
         id: Joi.string()
@@ -44,6 +49,7 @@ var joiFarmSchema = Joi.object().keys({
     dealers: Joi.array().items(joiDealerSchema),
     products: Joi.array().items(joiProductSchema),
     users: Joi.array().items(joiUserSchema),
+    lots: Joi.array().items(joiLotSchema),
     website: joiWebSiteSchema,
     advs: Joi.array().items(joiAdvSchema),
 });
