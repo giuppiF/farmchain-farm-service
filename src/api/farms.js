@@ -16,9 +16,15 @@ module.exports = (options) => {
             address: req.body.address,
             mail: req.body.mail,
             phone: req.body.phone,
+            logo: req.body.logo,
+            websiteURL: req.body.websiteURL,
+            description: req.body.description,
             dealers: req.body.dealers,
             products: req.body.products,
             users: req.body.users,
+            lots: req.body.lots,
+            siteBuilder: req.body.siteBuilder,
+            advs: req.body.advs
         }
         var farm = await repo.createFarm(farmData).catch(err => {res.status(400).send(err)})
         res.status(status.OK).json(farm)
@@ -35,9 +41,15 @@ module.exports = (options) => {
             address: req.body.address,
             mail: req.body.mail,
             phone: req.body.phone,
+            logo: req.body.logo,
+            websiteURL: req.body.websiteURL,
+            description: req.body.description,
             dealers: req.body.dealers,
             products: req.body.products,
             users: req.body.users,
+            lots: req.body.lots,
+            siteBuilder: req.body.siteBuilder,
+            advs: req.body.advs
         }
         var farm = await repo.updateFarm(req.params.farmID,farmData).catch(err => {res.status(400).send(err)})
         if(!farm) res.status(404).send()

@@ -5,7 +5,8 @@ const Joi = require('joi');
 var joiProductSchema = Joi.object().keys({
     name: Joi.string(),
     image: Joi.string(),
-    lastUpdate: Joi.date(),
+    category: Joi.string(),
+    updatedAt: Joi.date(),
     status:  Joi.string(),
 });
 var joiDealerSchema = Joi.object().keys({
@@ -31,6 +32,7 @@ const joiWebSiteSchema = Joi.object().keys({
 
 const joiLotSchema = Joi.object().keys({
     name: Joi.string(),
+    image: Joi.string(),
     description: Joi.string(),
 })
 
@@ -46,11 +48,14 @@ var joiFarmSchema = Joi.object().keys({
     address: Joi.string().required(),
     mail: Joi.string().email().required(),
     phone: Joi.string().required(),
+    logo: Joi.string(),
+    websiteURL: Joi.string(),
+    description: Joi.string(),
     dealers: Joi.array().items(joiDealerSchema),
     products: Joi.array().items(joiProductSchema),
     users: Joi.array().items(joiUserSchema),
     lots: Joi.array().items(joiLotSchema),
-    website: joiWebSiteSchema,
+    siteBuilder: joiWebSiteSchema,
     advs: Joi.array().items(joiAdvSchema),
 });
 
