@@ -3,45 +3,85 @@ const Farm = require('../models/farm.model')
 
 const repository = () => {
     
-  const getAllFarms = () => {
-    return new Promise( (resolve, reject) => {
-      let farms = Farm.find();
-      resolve(farms);
-    })
+  const getAllFarms = async () => {
+    try {
+      let farms = await Farm.find();
+      return farms
+    } catch (error) {
+      throw Error(error);
+    }
   }
 
-  const getFarm = (id) => {
-    return new Promise( (resolve,reject) =>{
-      let farm =  Farm.findById(id);
-      if(!farm) reject()
-      resolve(farm)
-    })
-  }
-  const createFarm = (payload) => {
-    return new Promise((resolve, reject) => {
-      let farm = new Farm(payload);
-      farm.save((err,data) => {
-        console.log(err)
-        if(err) reject(err)
-        resolve(data)
-      })
-    })
+  const getFarm = async (id) =>
+  {
+    try {
+      let farm = await Farm.findById(id);
+      return farm
+    } catch (error){
+      throw Error(error);
+    }
   }
 
-  const updateFarm = (id, farmBody) => {
-    return new Promise((resolve,reject) =>{
-      let farm = Farm.findByIdAndUpdate(id,farmBody,{new: true});
-      if(!farm) reject()
-      resolve(farm)
-    })
+  const createFarm = async (payload) => {
+    try{
+      let farm = await new Farm(payload)
+      await farm.save()   
+      return farm
+    } catch (error) {
+      throw Error(error)
+    }
+  }
+    
+  const updateFarm = async (id, farmBody) => {
+    try{
+      let farm = await Farm.findByIdAndUpdate(id,farmBody,{new: true,runValidators: true})
+      return farm
+    } catch (error) {
+      throw Error(error)
+    }
   }
 
-  const deleteFarm = (id) => {
-    return new Promise((resolve,reject) =>{
-      let farm = Farm.findByIdAndRemove(id);
-      if(!farm) reject()
-      resolve(farm)
-    })
+  const deleteFarm = async (id) => {
+    try{
+      let farm = await Farm.findByIdAndRemove(id)
+      return farm
+    } catch (error) {
+      throw Error(error)
+    }
+  }
+
+  const addProduct = async (farmId, product) => {
+    try{
+      let farm = await Farm.findByIdAndUpdate(farmId,{ $push: { products: product }},{new: true,runValidators: true})
+      return farm
+    } catch (error) {
+      throw Error(error)
+    }
+  }
+
+
+  const updateProduct= async (farmId, productId, productData) => {
+      try {
+        let farm = await Farm.findOneAndUpdate(
+          {_id: farmId, "products._id" : productId}, 
+          { "products.$" : productData }, 
+          { new: true,runValidators: true })
+        return farm
+      } catch (error){
+        throw Error(error)
+      }
+  }
+
+  const deleteProduct = async (farmId, productId) => {
+      try{
+        let farm = await Farm.findOneAndUpdate(
+          {_id: farmId, "products._id" : productId},
+          {$pull: {products: {_id: productId }}},
+          { new: true,runValidators: true })
+        return farm
+      } catch (error){
+        throw Error(error)
+      }
   }
 
   return Object.create({
@@ -49,7 +89,10 @@ const repository = () => {
     getFarm,
     createFarm,
     updateFarm,
-    deleteFarm
+    deleteFarm,
+    addProduct,
+    updateProduct,
+    deleteProduct
   })
 }
 

@@ -3,9 +3,10 @@ const Joigoose = require('joigoose')(Mongoose);
 const Joi = require('joi');
 
 var joiProductSchema = Joi.object().keys({
+    _id: Joi.string().regex(/^[0-9a-fA-F]{24}$/),
     name: Joi.string(),
     image: Joi.string(),
-    category: Joi.string(),
+    category: Joi.string().valid("Frutta","Verdura"),
     updatedAt: Joi.date(),
     status:  Joi.string(),
 });

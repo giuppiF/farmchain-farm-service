@@ -20,21 +20,35 @@ module.exports = (options) => {
             websiteURL: req.body.websiteURL,
             description: req.body.description,
             dealers: req.body.dealers,
-            products: req.body.products,
             users: req.body.users,
             lots: req.body.lots,
             siteBuilder: req.body.siteBuilder,
             advs: req.body.advs
         }
-        var farm = await repo.createFarm(farmData).catch(err => {res.status(400).send(err)})
-        res.status(status.OK).json(farm)
+
+        try{
+            var farm = await repo.createFarm(farmData)
+            farm ?
+                res.status(status.OK).json(farm)
+            :
+                res.status(404).send()
+        } catch (err) {
+            res.status(400).send({'msg': err.message})
+        }
     })
 
     router.get('/:farmID', async (req,res) => {
-        var farm = await repo.getFarm(req.params.farmID).catch(err => {res.status(400).send(err)})
-        if(!farm) res.status(404).send()
-        else res.status(status.OK).json(farm)
+        try{
+            var farm = await repo.getFarm(req.params.farmID)
+            farm ?
+                res.status(status.OK).json(farm)
+            :
+                res.status(404).send()
+        } catch (err) {
+            res.status(400).send({'msg': err.message})
+        }
     })
+
     router.put('/:farmID', async (req,res) => {
         const farmData = {
             name: req.body.name,
@@ -45,20 +59,85 @@ module.exports = (options) => {
             websiteURL: req.body.websiteURL,
             description: req.body.description,
             dealers: req.body.dealers,
-            products: req.body.products,
             users: req.body.users,
             lots: req.body.lots,
             siteBuilder: req.body.siteBuilder,
             advs: req.body.advs
         }
-        var farm = await repo.updateFarm(req.params.farmID,farmData).catch(err => {res.status(400).send(err)})
-        if(!farm) res.status(404).send()
-        else res.status(status.OK).json(farm)
+        try{
+            var farm = await repo.updateFarm(req.params.farmID,farmData)
+            farm ?
+                res.status(status.OK).json(farm)
+            :
+                res.status(404).send()
+        } catch (err) {
+            res.status(400).send({'msg': err.message})
+        }
     })
+
     router.delete('/:farmID', async (req,res) => {
-        var farm = await repo.deleteFarm(req.params.farmID).catch(err => {res.status(400).send(err)})
-        if(!farm) res.status(404).send()
-        else res.status(status.OK).json(farm)
+        try{
+            var farm = await repo.deleteFarm(req.params.farmID)
+            farm ?
+                res.status(status.OK).json(farm)
+            :
+                res.status(404).send()
+        } catch (err) {
+            res.status(400).send({'msg': err.message})
+        }
+    })
+
+    router.post('/:farmID/product', async (req,res, next) => {
+        const productData = {
+            _id: req.body._id,
+            name: req.body.name,
+            image: req.body.image,
+            category: req.body.category,
+            updatedAt: req.body.updatedAt,
+            status:  req.body.status,
+        }
+        try{
+            var farm = await repo.addProduct(req.params.farmID,productData)
+            farm ?
+                res.status(status.OK).json(farm)
+            :            
+                res.status(404).send()
+        } catch (err) {
+            res.status(400).send({'msg' : err.message})
+        }
+
+    })
+
+    router.put('/:farmID/product/:productID', async (req,res) => {
+        const productData = {
+            _id: req.body._id,
+            name: req.body.name,
+            image: req.body.image,
+            category: req.body.category,
+            updatedAt: req.body.updatedAt,
+            status:  req.body.status,
+        }
+        try{
+            var farm = await repo.updateProduct(req.params.farmID,req.params.productID,productData)
+            farm ?
+                res.status(status.OK).json(farm)
+            :            
+                res.status(404).send()
+        } catch (err) {
+            res.status(400).send({'msg' : err.message})
+        }
+    })
+
+    router.delete('/:farmID/product/:productID', async (req,res) => {
+        try{
+            var farm = await repo.deleteProduct(req.params.farmID,req.params.productID)
+            farm ?
+                res.status(status.OK).json(farm)
+            :            
+                res.status(404).send()
+        } catch (err) {
+            res.status(400).send({'msg' : err.message})
+        }
     })
 
     return router;
