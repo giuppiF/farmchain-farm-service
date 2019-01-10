@@ -10,4 +10,8 @@ const serverSettings = {
 }
 
   
-module.exports = Object.assign({}, { dbSettings, serverSettings })
+const uploadServiceSettings = {
+    path: process.env.STORAGE_PATH
+}
+
+module.exports = Object.assign({}, { dbSettings, serverSettings, uploadServiceSettings })

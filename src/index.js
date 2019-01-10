@@ -4,15 +4,25 @@ const server = require('./server/server')
 const repository = require('./repository/repository')
 const config = require('./config')
 const mediator = new EventEmitter()
+const services = require('./services/')
 
 
 mediator.on('db.ready', async (db) => {
     console.error('Database started!!')
     var repo = await repository.connect(db);
+
+    var storageService = await services.storageService.start({
+        path: config.uploadServiceSettings.path
+    })
+
     var app = await server.start({
         port:  config.serverSettings.port,
-        repo: repo
+        repo: repo,
+        storagePath: config.uploadServiceSettings.path,
+        storageService: storageService
     })
+
+    
     app.on('close', () => {
         repo.disconnect()
       })
