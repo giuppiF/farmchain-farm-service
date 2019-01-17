@@ -95,13 +95,12 @@ const repository = () => {
 
   const updateLot= async (farmId, lotId, lotData) => {
     try {
-      console.log(typeof farmId)
       let farm = await Farm.findOneAndUpdate(
         {_id: farmId, "lots._id" : lotId}, 
         { "lots.$" : lotData }, 
         { new: true,runValidators: true })
 
-    return farm
+      return farm
     } catch (error){
       throw Error(error)
     }

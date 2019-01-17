@@ -1,12 +1,10 @@
 'use strict'
 const status = require('http-status')
 const router = require('express').Router();
-var path = require('path');
-var fs = require('fs');
-var mkdirp = require('mkdirp');
+const path = require('path')
 
 module.exports = (options) => {
-    const {repo, storageService} = options
+    const {repo, storageService, storagePath} = options
 
     router.get('/', async (req,res) => {
         var farms = await repo.getAllFarms();
@@ -92,46 +90,35 @@ module.exports = (options) => {
 
     router.post('/:farmID/lot', async (req,res) => {
         try{
-        var lotData = {
-            name: req.body.name,
-            description: req.body.description,
-            images: []
-        }
-        var lot = await repo.addLot(req.params.farmID,lotData)
+            var lotData = {
+                name: req.body.name,
+                description: req.body.description,
+                images: []
+            }
+            var lot = await repo.addLot(req.params.farmID,lotData)
 
-        var images = req.files.images.map( async (image)=> {
-            var filename = Date.now()+ '-' + image.originalFilename
-            var pathname = path.join(options.storagePath, req.originalUrl, lot._id.toString())
-            var saveTo = path.join(pathname,filename)
-            if (!fs.existsSync(pathname)) {
-                mkdirp.sync(pathname)
-            }
-            var move = await moveFile(image.path, saveTo)
-            lotData.images.push({filename: filename})
-           
-            function moveFile(imagePath,saveTo) {
-                return new Promise(function (resolve, reject) {
-                    fs.rename(imagePath, saveTo, async  (err)=>{
-                        if(err) res.status(400).json({msg: err})
-                        else
-                        resolve()
-                    })
-                });
-              }
-        })
-        Promise.all(images).then(async ()=>{
-            try{
-                var addLotImage = await repo.updateLot(req.params.farmID,lot._id,lotData) 
-                res.status(status.OK).json(addLotImage)
-            }catch (err) {
-                res.status(400).json({msg: err.message})
-            }
-            
-        })
-        
-    }catch (err) {
-        res.status(400).json({msg: err})
-    }
+            var images = req.files.images.map( async (image)=> {
+                try{
+                    var filename = Date.now()+ '-' + image.originalFilename
+                    var pathname = path.join(storagePath, req.originalUrl, lot._id.toString())
+                    var imagefile = await storageService.saveToDir(image.path, filename, pathname )
+
+                    lotData.images.push({filename: filename})
+                }catch (err) {
+                    res.status(400).json({msg: err.message})
+                }
+            })
+            Promise.all(images).then( async ()=>{
+                try{
+                    var addLotImage = await repo.updateLot(req.params.farmID,lot._id,lotData) 
+                    res.status(status.OK).json(addLotImage)
+                }catch (err) {
+                    res.status(400).json({msg: err.message})
+                }
+            })
+        }catch (err) {
+            res.status(400).json({msg: err})
+        }
 
     })
 
