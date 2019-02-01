@@ -84,6 +84,16 @@ const repository = () => {
       }
   }
 
+  const getLot = async (farmId,lotId) =>
+  {
+    try {
+      let farm = await Farm.findById(farmId)
+      return farm.lots.id(lotId)
+    } catch (error){
+      throw Error(error);
+    }
+  }
+
   const addLot = async (farmId, lot) => {
     try{
       let farm = await Farm.findByIdAndUpdate(farmId,{ $push: { lots: lot }},{new: true,runValidators: true})
@@ -106,7 +116,19 @@ const repository = () => {
     } catch (error){
       throw Error(error)
     }
-}
+  }
+
+  const deleteLot = async (farmId, lotId) => {
+    try{
+      let farm = await Farm.findOneAndUpdate(
+        {_id: farmId, "lots._id" : lotId},
+        {$pull: {lots: {_id: lotId }}},
+        { new: true,runValidators: true })
+      return farm
+    } catch (error){
+      throw Error(error)
+    }
+  }
 
   return Object.create({
     getAllFarms,
@@ -117,8 +139,10 @@ const repository = () => {
     addProduct,
     updateProduct,
     deleteProduct,
+    getLot,
     addLot,
-    updateLot
+    updateLot,
+    deleteLot
   })
 }
 

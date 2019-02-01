@@ -1,3 +1,3 @@
 const storageService = require('./storage.service')
-
-module.exports = Object.assign({}, {storageService})
+const productService = require('./product.service')
+module.exports = Object.assign({}, {storageService, productService})

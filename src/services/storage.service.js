@@ -21,9 +21,35 @@ const storageService = (options) => {
     }
   }
 
+  const deleteFile =  async (filename, pathname) => {
+
+    try{
+      var file = path.join(pathname,filename)
+      await fs.unlinkSync(file)
+      return true
+
+    } catch (err) {
+      throw  Error(err)
+    }
+  }
+
+  const deleteDir =  async (pathname) => {
+
+    try{
+      await fs.rmdirSync(pathname);
+      return true
+
+    } catch (err) {
+      throw  Error(err)
+    }
+  }
+
+
 
   return Object.create({
-    saveToDir
+	saveToDir,
+  deleteFile,
+  deleteDir
   })
 }
 

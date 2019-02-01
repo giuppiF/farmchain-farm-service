@@ -33,9 +33,7 @@ const joiWebSiteSchema = Joi.object().keys({
 
 const joiLotSchema = Joi.object().keys({
     name: Joi.string(),
-    images: Joi.array().items(Joi.object().keys({
-        filename: Joi.string()
-    })),
+    image:  Joi.string(),
     description: Joi.string(),
 })
 

@@ -20,14 +20,19 @@ const start  = (options) => {
         // helmet aggiunge header di sicurezza
         app.use(helmet())
         app.use(bodyParser.json()); 
-        app.use(formData.parse({uploadDir: options.storagePath}));
+        app.use(formData.parse({
+            uploadDir: options.storagePath,
+            autoClean: true
+        }));
         app.use((err,req,res,next) => {
             reject(new Error('Something went wrong!, err:' + err))
             res.status(500).send('Something went wrong!')
         })
         
         const farmApi = require('../api/farms')(options)
+        const lotsApi = require('../api/lots')(options)
         app.use('/farm',farmApi)
+        app.use('/farm',lotsApi)
         app.use(express.static(options.storagePath));
 
 

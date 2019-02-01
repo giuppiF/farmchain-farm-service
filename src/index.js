@@ -15,11 +15,17 @@ mediator.on('db.ready', async (db) => {
         path: config.uploadServiceSettings.path
     })
 
+    var productService = await services.productService.start({
+        host: config.productServiceSettings.host,
+        port: config.productServiceSettings.port
+    })
+
     var app = await server.start({
         port:  config.serverSettings.port,
         repo: repo,
         storagePath: config.uploadServiceSettings.path,
-        storageService: storageService
+        storageService: storageService,
+        productService: productService
     })
 
     
