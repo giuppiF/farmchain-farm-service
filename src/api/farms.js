@@ -58,12 +58,7 @@ module.exports = (options) => {
             phone: req.body.phone,
             logo: req.body.logo,
             websiteURL: req.body.websiteURL,
-            description: req.body.description,
-            dealers: req.body.dealers,
-            users: req.body.users,
-            lots: req.body.lots,
-            siteBuilder: req.body.siteBuilder,
-            advs: req.body.advs
+            description: req.body.description
         }
         try{
             var farm = await repo.updateFarm(req.params.farmID,farmData)
@@ -96,7 +91,7 @@ module.exports = (options) => {
                 images: []
             }
             var lot = await repo.addLot(req.params.farmID,lotData)
-
+            lotData._id= lot._id
             var images = req.files.images.map( async (image)=> {
                 try{
                     var filename = Date.now()+ '-' + image.originalFilename
@@ -184,6 +179,7 @@ module.exports = (options) => {
             updatedAt: req.body.updatedAt,
             status:  req.body.status,
         } 
+        
         try{
             var farm = await repo.updateProduct(req.params.farmID,req.params.productID,productData)
             farm ?

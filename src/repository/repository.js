@@ -87,7 +87,9 @@ const repository = () => {
   const addLot = async (farmId, lot) => {
     try{
       let farm = await Farm.findByIdAndUpdate(farmId,{ $push: { lots: lot }},{new: true,runValidators: true})
-      return farm.lots[farm.lots.length -1]
+      let farm_udpated = await Farm.findById(farmId)
+      let position = farm_udpated.lots.length - 1
+      return farm.lots[position]
     } catch (error) {
       throw Error(error)
     }
