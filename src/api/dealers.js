@@ -11,21 +11,22 @@ module.exports = (options) => {
             var dealerData = {
                 name: req.body.name,
                 phone: req.body.phone,
-                mail: req.body
+                mail: req.body.mail,
+                address: req.body.address
             }
-            var lot = await repo.addLot(req.params.farmID,dealerData)
-            dealerData._id = lot._id
+            var dealer = await repo.addDealer(req.params.farmID,dealerData)
+            dealerData._id = dealer._id
             if(req.files.image){
                 var image = req.files.image
     
                 var filename = Date.now()+ '-' + image.originalFilename
-                var pathname = path.join(storagePath, req.originalUrl, lot._id.toString())
+                var pathname = path.join(storagePath, req.originalUrl, dealer._id.toString())
                 var uploadfile = await storageService.saveToDir(image.path, filename, pathname )
                 dealerData.image = filename
             }
             
-            var addLotImage = await repo.updateLot(req.params.farmID,lot._id,dealerData) 
-            res.status(status.OK).json(addLotImage)
+            var addDealerImage = await repo.updateDealer(req.params.farmID,dealer._id,dealerData) 
+            res.status(status.OK).json(addDealerImage)
 
         }catch (err) {
             res.status(400).json({msg: err.message})
@@ -33,46 +34,48 @@ module.exports = (options) => {
 
     })
 
-    router.put('/:farmID/dealer/:lotID', async (req,res) => {
+    router.put('/:farmID/dealer/:dealerID', async (req,res) => {
 
-        var lotData = {
-            _id: req.params.lotID,
+        var dealerData = {
+            _id: req.params.dealerID,
             name: req.body.name,
-            description: req.body.description
+            phone: req.body.phone,
+            mail: req.body.mail,
+            address: req.body.address
         }
         try{
             if(req.files.image){
                 
                 var pathname = path.join(storagePath, req.originalUrl)
-                var lot = await repo.getLot(req.params.farmID,lotData._id)
-                if(lot.image)
-                    var deleteFile = await storageService.deleteFile(lot.image,pathname)            
+                var dealer = await repo.getDealer(req.params.farmID,req.params.dealerID)
+                if(dealer.image)
+                    var deleteFile = await storageService.deleteFile(dealer.image,pathname)            
 
                 var image = req.files.image    
                 var filename = Date.now()+ '-' + image.originalFilename
                 
                 var uploadfile = await storageService.saveToDir(image.path, filename, pathname )
-                lotData.image = filename
+                dealerData.image = filename
                 
 
             }else{
-                lotData.image=req.body.image
+                dealerData.image=req.body.image
             }
 
-            var farm = await repo.updateLot(req.params.farmID,lotData._id,lotData) 
+            var farm = await repo.updateDealer(req.params.farmID,req.params.dealerID,dealerData) 
 
-            var updateProductsLots = farm.products.map( async (product) => {
+            var updateProductsDealers = farm.products.map( async (product) => {
                 try{
-                    await productService.updateProductLot(req.params.farmID, product._id, lotData)
+                    await productService.updateProductDealer(product._id, dealerData)
                 } catch (err) {
                     if(err.message != 404 ){
-                        res.status(400).send({'msg' : err})
+                        res.status(400).send({'msg' : err.message})
                         return
                     }
                 }
                 
             })
-            Promise.all(updateProductsLots).then( async ()=>{
+            Promise.all(updateProductsDealers).then( async ()=>{
                 farm ?
                     res.status(status.OK).json(farm)
                 :            
@@ -83,18 +86,31 @@ module.exports = (options) => {
         }
     })
 
-    router.delete('/:farmID/dealer/:lotID', async (req,res) => {
+    router.delete('/:farmID/dealer/:dealerID', async (req,res) => {
         try{
             var pathname = path.join(storagePath, req.originalUrl)
-            var lot = await repo.getLot(req.params.farmID,req.params.lotID)
-            if(lot.image)
-                var deleteFile = await storageService.deleteFile(lot.image,pathname)  
+            var dealer = await repo.getDealer(req.params.farmID,req.params.dealerID)
+            if(dealer.image)
+                var deleteFile = await storageService.deleteFile(dealer.image,pathname)  
                 var deleteDir = await storageService.deleteDir(pathname)  
-            var farm = await repo.deleteLot(req.params.farmID,req.params.lotID)
-            farm ?
-                res.status(status.OK).json(farm)
-            :            
-                res.status(404).send()
+            var farm = await repo.deleteDealer(req.params.farmID,req.params.dealerID)
+            var deleteProductsDealer = farm.products.map( async (product) => {
+                try{
+                    await productService.deleteProductDealer(product._id, req.params.dealerID)
+                } catch (err) {
+                    if(err.message != 404 ){
+                        res.status(400).send({'msg' : err})
+                        return
+                    }
+                }
+                
+            })
+            Promise.all(deleteProductsDealer).then( async ()=>{
+                farm ?
+                    res.status(status.OK).json(farm)
+                :            
+                    res.status(404).send()
+            })
         } catch (err) {
             res.status(400).send({'msg' : err.message})
         }

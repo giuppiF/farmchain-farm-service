@@ -130,6 +130,54 @@ const repository = () => {
     }
   }
 
+
+  const getDealer = async (farmId,dealerId) =>
+  {
+    try {
+      let farm = await Farm.findById(farmId)
+      return farm.dealers.id(dealerId)
+    } catch (error){
+      throw Error(error);
+    }
+  }
+
+  const addDealer = async (farmId, dealer) => {
+    try{
+      let farm = await Farm.findByIdAndUpdate(farmId,{ $push: { dealers: dealer }},{new: true,runValidators: true})
+      let farm_udpated = await Farm.findById(farmId)
+      let position = farm_udpated.dealers.length - 1
+      return farm.dealers[position]
+    } catch (error) {
+      throw Error(error)
+    }
+  }
+
+  const updateDealer= async (farmId, dealerId, dealerData) => {
+    try {
+      let farm = await Farm.findOneAndUpdate(
+        {_id: farmId, "dealers._id" : dealerId}, 
+        { "dealers.$" : dealerData }, 
+        { new: true,runValidators: true })
+
+      return farm
+    } catch (error){
+      throw Error(error)
+    }
+  }
+
+  const deleteDealer = async (farmId, dealerId) => {
+    try{
+      let farm = await Farm.findOneAndUpdate(
+        {_id: farmId, "dealers._id" : dealerId},
+        {$pull: {dealers: {_id: dealerId }}},
+        { new: true,runValidators: true })
+      return farm
+    } catch (error){
+      throw Error(error)
+    }
+  }
+
+
   return Object.create({
     getAllFarms,
     getFarm,
@@ -142,7 +190,11 @@ const repository = () => {
     getLot,
     addLot,
     updateLot,
-    deleteLot
+    deleteLot,
+    getDealer,
+    addDealer,
+    updateDealer,
+    deleteDealer
   })
 }
 

@@ -62,7 +62,7 @@ module.exports = (options) => {
 
             var updateProductsLots = farm.products.map( async (product) => {
                 try{
-                    await productService.updateProductLot(req.params.farmID, product._id, lotData)
+                    await productService.updateProductLot(product._id, lotData)
                 } catch (err) {
                     if(err.message != 404 ){
                         res.status(400).send({'msg' : err})
@@ -90,10 +90,24 @@ module.exports = (options) => {
                 var deleteFile = await storageService.deleteFile(lot.image,pathname)  
                 var deleteDir = await storageService.deleteDir(pathname)  
             var farm = await repo.deleteLot(req.params.farmID,req.params.lotID)
-            farm ?
-                res.status(status.OK).json(farm)
-            :            
-                res.status(404).send()
+
+            var deleteProductsLot = farm.products.map( async (product) => {
+                try{
+                    await productService.deleteProductLot(product._id, req.params.lotID)
+                } catch (err) {
+                    if(err.message != 404 ){
+                        res.status(400).send({'msg' : err})
+                        return
+                    }
+                }
+                
+            })
+            Promise.all(deleteProductsLot).then( async ()=>{
+                farm ?
+                    res.status(status.OK).json(farm)
+                :            
+                    res.status(404).send()
+            })
         } catch (err) {
             res.status(400).send({'msg' : err.message})
         }

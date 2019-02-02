@@ -31,8 +31,10 @@ const start  = (options) => {
         
         const farmApi = require('../api/farms')(options)
         const lotsApi = require('../api/lots')(options)
+        const dealersApi = require('../api/dealers')(options)
         app.use('/farm',farmApi)
         app.use('/farm',lotsApi)
+        app.use('/farm',dealersApi)
         app.use(express.static(options.storagePath));
 
 

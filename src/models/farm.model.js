@@ -15,6 +15,7 @@ var joiDealerSchema = Joi.object().keys({
     address: Joi.string(),
     phone: Joi.string(),
     mail: Joi.string(),
+    image:  Joi.string(),
 });
 
 var joiUserSchema = Joi.object().keys({
