@@ -20,9 +20,10 @@ module.exports = (options) => {
                 var image = req.files.image
     
                 var filename = Date.now()+ '-' + image.originalFilename
-                var pathname = path.join(storagePath, req.originalUrl, dealer._id.toString())
-                var uploadfile = await storageService.saveToDir(image.path, filename, pathname )
-                dealerData.image = filename
+                var pathname = path.join(req.originalUrl, dealer._id.toString())
+                var completePathname = path.join(storagePath, pathname)
+                var uploadfile = await storageService.saveToDir(image.path, filename, completePathname )
+                dealerData.image = path.join(pathname, filename)
             }
             
             var addDealerImage = await repo.updateDealer(req.params.farmID,dealer._id,dealerData) 
@@ -46,16 +47,17 @@ module.exports = (options) => {
         try{
             if(req.files.image){
                 
-                var pathname = path.join(storagePath, req.originalUrl)
+                var pathname = req.originalUrl
+                var completePathname = path.join(storagePath, pathname)
                 var dealer = await repo.getDealer(req.params.farmID,req.params.dealerID)
                 if(dealer.image)
-                    var deleteFile = await storageService.deleteFile(dealer.image,pathname)            
+                    var deleteFile = await storageService.deleteFile(dealer.image,storagePath)            
 
                 var image = req.files.image    
                 var filename = Date.now()+ '-' + image.originalFilename
                 
-                var uploadfile = await storageService.saveToDir(image.path, filename, pathname )
-                dealerData.image = filename
+                var uploadfile = await storageService.saveToDir(image.path, filename, completePathname )
+                dealerData.image = path.join(pathname,filename)
                 
 
             }else{
@@ -91,7 +93,7 @@ module.exports = (options) => {
             var pathname = path.join(storagePath, req.originalUrl)
             var dealer = await repo.getDealer(req.params.farmID,req.params.dealerID)
             if(dealer.image)
-                var deleteFile = await storageService.deleteFile(dealer.image,pathname)  
+                var deleteFile = await storageService.deleteFile(dealer.image,storagePath)  
                 var deleteDir = await storageService.deleteDir(pathname)  
             var farm = await repo.deleteDealer(req.params.farmID,req.params.dealerID)
             var deleteProductsDealer = farm.products.map( async (product) => {

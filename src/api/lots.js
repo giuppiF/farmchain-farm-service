@@ -18,9 +18,10 @@ module.exports = (options) => {
                 var image = req.files.image
     
                 var filename = Date.now()+ '-' + image.originalFilename
-                var pathname = path.join(storagePath, req.originalUrl, lot._id.toString())
-                var uploadfile = await storageService.saveToDir(image.path, filename, pathname )
-                lotData.image = filename
+                var pathname = path.join(req.originalUrl, lot._id.toString())
+                var completePath = path.join(storagePath,pathname)
+                var uploadfile = await storageService.saveToDir(image.path, filename, completePath )
+                lotData.image = path.join(pathname,filename)
             }
             
             var addLotImage = await repo.updateLot(req.params.farmID,lot._id,lotData) 
@@ -42,16 +43,17 @@ module.exports = (options) => {
         try{
             if(req.files.image){
                 
-                var pathname = path.join(storagePath, req.originalUrl)
+                var pathname = req.originalUrl
+                var completePathname = path.join(storagePath, pathname)
                 var lot = await repo.getLot(req.params.farmID,lotData._id)
                 if(lot.image)
-                    var deleteFile = await storageService.deleteFile(lot.image,pathname)            
+                    var deleteFile = await storageService.deleteFile(lot.image,storagePath)            
 
                 var image = req.files.image    
                 var filename = Date.now()+ '-' + image.originalFilename
                 
-                var uploadfile = await storageService.saveToDir(image.path, filename, pathname )
-                lotData.image = filename
+                var uploadfile = await storageService.saveToDir(image.path, filename, completePathname )
+                lotData.image = path.join(pathname,filename)
                 
 
             }else{
@@ -87,7 +89,7 @@ module.exports = (options) => {
             var pathname = path.join(storagePath, req.originalUrl)
             var lot = await repo.getLot(req.params.farmID,req.params.lotID)
             if(lot.image)
-                var deleteFile = await storageService.deleteFile(lot.image,pathname)  
+                var deleteFile = await storageService.deleteFile(lot.image,storagePath)  
                 var deleteDir = await storageService.deleteDir(pathname)  
             var farm = await repo.deleteLot(req.params.farmID,req.params.lotID)
 

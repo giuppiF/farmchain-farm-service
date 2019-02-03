@@ -19,16 +19,23 @@ module.exports = (options) => {
             phone: req.body.phone,
             logo: req.body.logo,
             websiteURL: req.body.websiteURL,
-            description: req.body.description,
-            dealers: req.body.dealers,
-            users: req.body.users,
-            lots: req.body.lots,
-            siteBuilder: req.body.siteBuilder,
-            advs: req.body.advs
+            description: req.body.description
         }
 
         try{
             var farm = await repo.createFarm(farmData)
+            farmData._id = farm._id
+            if(req.files.logo){
+                var logo = req.files.logo
+    
+                var filename = Date.now()+ '-' + logo.originalFilename
+                var pathname = path.join( req.originalUrl, farm._id.toString())
+                var completePath = path.join(storagePath,pathname)
+                var uploadfile = await storageService.saveToDir(logo.path, filename, completePath )
+                farm.logo = path.join(pathname, filename)
+                farm.save()
+            }
+
             farm ?
                 res.status(status.OK).json(farm)
             :
@@ -61,6 +68,26 @@ module.exports = (options) => {
             description: req.body.description
         }
         try{
+
+
+            if(req.files.logo){
+                
+                var pathname = req.originalUrl
+                var completePathname = path.join(storagePath, pathname)
+                var farm = await repo.getFarm(req.params.farmID)
+                if(farm.logo)
+                    var deleteFile = await storageService.deleteFile(farm.logo,storagePath)            
+
+                var logo = req.files.logo    
+                var filename = Date.now()+ '-' + logo.originalFilename
+                
+                var uploadfile = await storageService.saveToDir(logo.path, filename, completePathname )
+                farmData.logo = path.join(pathname,filename)
+                
+
+            }else{
+                farmData.logo=req.body.logo
+            }
             var farm = await repo.updateFarm(req.params.farmID,farmData)
             farm ?
                 res.status(status.OK).json(farm)
@@ -73,67 +100,20 @@ module.exports = (options) => {
 
     router.delete('/:farmID', async (req,res) => {
         try{
-            var farm = await repo.deleteFarm(req.params.farmID)
+
+            var pathname = path.join(storagePath, req.originalUrl)
+            var farm = await repo.getFarm(req.params.farmID)
+            if(farm.logo)
+                var deleteFile = await storageService.deleteFile(farm.logo,storagePath)  
+                var deleteDir = await storageService.deleteDir(pathname)  
+
+            farm = await repo.deleteFarm(req.params.farmID)
             farm ?
                 res.status(status.OK).json(farm)
             :
                 res.status(404).send()
         } catch (err) {
             res.status(400).send({'msg': err.message})
-        }
-    })
-
-    router.post('/:farmID/product', async (req,res, next) => {
-        const productData = {
-            _id: req.body._id,
-            name: req.body.name,
-            image: req.body.image,
-            category: req.body.category,
-            updatedAt: req.body.updatedAt,
-            status:  req.body.status,
-        }
-        try{
-            var farm = await repo.addProduct(req.params.farmID,productData)
-            farm ?
-                res.status(status.OK).json(farm)
-            :            
-                res.status(404).send()
-        } catch (err) {
-            res.status(400).send({'msg' : err.message})
-        }
-
-    })
-
-    router.put('/:farmID/product/:productID', async (req,res) => {
-        const productData = {
-            _id: req.body._id,
-            name: req.body.name,
-            image: req.body.image,
-            category: req.body.category,
-            updatedAt: req.body.updatedAt,
-            status:  req.body.status,
-        } 
-        
-        try{
-            var farm = await repo.updateProduct(req.params.farmID,req.params.productID,productData)
-            farm ?
-                res.status(status.OK).json(farm)
-            :            
-                res.status(404).send()
-        } catch (err) {
-            res.status(400).send({'msg' : err.message})
-        }
-    })
-
-    router.delete('/:farmID/product/:productID', async (req,res) => {
-        try{
-            var farm = await repo.deleteProduct(req.params.farmID,req.params.productID)
-            farm ?
-                res.status(status.OK).json(farm)
-            :            
-                res.status(404).send()
-        } catch (err) {
-            res.status(400).send({'msg' : err.message})
         }
     })
 
