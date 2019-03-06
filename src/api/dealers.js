@@ -46,7 +46,6 @@ module.exports = (options) => {
             phone: req.body.phone,
             mail: req.body.mail,
             site: req.body.site,
-            description: req.body.description,
             address: req.body.address
         }
         try{

@@ -34,6 +34,7 @@ module.exports = (options) => {
             image: req.body.image,
             updatedAt: req.body.updatedAt,
             status:  req.body.status,
+            category: req.body.category
         } 
         
         try{
