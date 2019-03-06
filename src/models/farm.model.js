@@ -13,9 +13,9 @@ var joiProductSchema = Joi.object().keys({
 var joiDealerSchema = Joi.object().keys({
     name: Joi.string(),
     address: Joi.string(),
-    phone: Joi.string(),
-    mail: Joi.string(),
-    site: Joi.string(),
+    phone: Joi.string().allow(''),
+    mail: Joi.string().allow(''),
+    site: Joi.string().allow(''),
     image:  Joi.string(),
 });
 
