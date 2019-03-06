@@ -13,6 +13,8 @@ module.exports = (options) => {
                 phone: req.body.phone,
                 mail: req.body.mail,
                 address: req.body.address,
+                site: req.body.site,
+                description: req.body.description,
                 image: 'placeholder'
             }
             var dealer = await repo.addDealer(req.params.farmID,dealerData)
@@ -43,6 +45,8 @@ module.exports = (options) => {
             name: req.body.name,
             phone: req.body.phone,
             mail: req.body.mail,
+            site: req.body.site,
+            description: req.body.description,
             address: req.body.address
         }
         try{
