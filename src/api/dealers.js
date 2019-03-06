@@ -12,7 +12,8 @@ module.exports = (options) => {
                 name: req.body.name,
                 phone: req.body.phone,
                 mail: req.body.mail,
-                address: req.body.address
+                address: req.body.address,
+                image: ''
             }
             var dealer = await repo.addDealer(req.params.farmID,dealerData)
             dealerData._id = dealer._id
