@@ -13,7 +13,7 @@ module.exports = (options) => {
                 phone: req.body.phone,
                 mail: req.body.mail,
                 address: req.body.address,
-                image: ''
+                image: 'placeholder'
             }
             var dealer = await repo.addDealer(req.params.farmID,dealerData)
             dealerData._id = dealer._id
