@@ -62,11 +62,28 @@ const productService = (options) => {
         }
     }
 
+
+    const updateProductFarm = async (productId,farm) => {
+        try{
+            const url = `http://${options.host}:${options.port}/product/${productId}/farm`
+            let config = {
+                headers: {
+                "Content-Type" : "application/json",
+                }
+            }
+            var response = await axios.put(url,farm,config)
+            return response;
+        } catch (err){
+            throw  Error(err.response.status)
+        }
+    }
+
     return Object.create({
         updateProductLot,
         deleteProductLot,
         updateProductDealer,
-        deleteProductDealer
+        deleteProductDealer,
+        updateProductFarm
     })
 }
 

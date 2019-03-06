@@ -11,11 +11,12 @@ var joiProductSchema = Joi.object().keys({
     status:  Joi.string(),
 });
 var joiDealerSchema = Joi.object().keys({
-    name: Joi.string(),
+    name: Joi.string().required(),
     address: Joi.string(),
     phone: Joi.string(),
     mail: Joi.string(),
-    image:  Joi.string(),
+    site: Joi.string(),
+    image:  Joi.string().required(),
 });
 
 var joiUserSchema = Joi.object().keys({

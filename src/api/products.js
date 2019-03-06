@@ -32,7 +32,6 @@ module.exports = (options) => {
             _id: req.body._id,
             name: req.body.name,
             image: req.body.image,
-            category: req.body.category,
             updatedAt: req.body.updatedAt,
             status:  req.body.status,
         } 

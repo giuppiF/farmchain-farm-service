@@ -4,7 +4,7 @@ const router = require('express').Router();
 const path = require('path')
 
 module.exports = (options) => {
-    const {repo, storageService, storagePath} = options
+    const {repo, storageService, storagePath, productService} = options
 
     router.get('/', async (req,res) => {
         var farms = await repo.getAllFarms();
@@ -67,6 +67,16 @@ module.exports = (options) => {
             websiteURL: req.body.websiteURL,
             description: req.body.description
         }
+
+        const productFarmData = {
+            name: req.body.name,
+            address: req.body.address,
+            mail: req.body.mail,
+            phone: req.body.phone,
+            logo: req.body.logo,
+            websiteURL: req.body.websiteURL,
+            description: req.body.description
+        }
         try{
 
 
@@ -89,10 +99,22 @@ module.exports = (options) => {
                 farmData.logo=req.body.logo
             }
             var farm = await repo.updateFarm(req.params.farmID,farmData)
+
+            productFarmData._id = farm._id
+
+            farm.products.map(
+                async (product) => {
+                    var product = await productService.updateProductFarm(product.id, productFarmData)
+                }
+            )
+            
+
+
             farm ?
                 res.status(status.OK).json(farm)
             :
                 res.status(404).send()
+                
         } catch (err) {
             res.status(400).send({'msg': err.message})
         }
