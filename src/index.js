@@ -9,7 +9,7 @@ const services = require('./services/')
 
 mediator.on('db.ready', async (db) => {
     console.error('Database started!!')
-    var repo = await repository.connect(db);
+    var repo = await repository.connect(db); 
 
     var storageService = await services.storageService.start({
         path: config.uploadServiceSettings.path
