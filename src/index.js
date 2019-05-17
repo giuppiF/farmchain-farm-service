@@ -20,12 +20,18 @@ mediator.on('db.ready', async (db) => {
         port: config.productServiceSettings.port
     })
 
+    var auth = await config.authConfig.start({
+        secret: config.authSettings.JWTSecret,
+        repo: repo
+    })
+
     var app = await server.start({
         port:  config.serverSettings.port,
         repo: repo,
         storagePath: config.uploadServiceSettings.path,
         storageService: storageService,
-        productService: productService
+        productService: productService,
+        auth: auth
     })
 
     

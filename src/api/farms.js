@@ -4,7 +4,7 @@ const router = require('express').Router();
 const path = require('path')
 
 module.exports = (options) => {
-    const {repo, storageService, storagePath, productService} = options
+    const {repo, storageService, storagePath, productService, auth} = options
 
     router.get('/', async (req,res) => {
         var farms = await repo.getAllFarms();
@@ -45,7 +45,7 @@ module.exports = (options) => {
         }
     })
 
-    router.get('/:farmID', async (req,res) => {
+    router.get('/:farmID',auth.required,auth.isFarmAdmin, async (req,res) => {
         try{
             var farm = await repo.getFarm(req.params.farmID)
             farm ?
@@ -57,7 +57,7 @@ module.exports = (options) => {
         }
     })
 
-    router.put('/:farmID', async (req,res) => {
+    router.put('/:farmID',auth.required,auth.isFarmAdmin,  async (req,res) => {
         const farmData = {
             name: req.body.name,
             address: req.body.address,
@@ -78,7 +78,6 @@ module.exports = (options) => {
             description: req.body.description
         }
         try{
-
 
             if(req.files.logo){
                 
@@ -120,7 +119,7 @@ module.exports = (options) => {
         }
     })
 
-    router.delete('/:farmID', async (req,res) => {
+    router.delete('/:farmID',  async (req,res) => {
         try{
 
             var pathname = path.join(storagePath, req.originalUrl)

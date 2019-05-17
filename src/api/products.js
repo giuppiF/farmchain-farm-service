@@ -4,9 +4,9 @@ const router = require('express').Router();
 const path = require('path')
 
 module.exports = (options) => {
-    const {repo, storageService, storagePath} = options
+    const {repo, storageService, storagePath, auth} = options
 
-    router.post('/:farmID/product', async (req,res, next) => {
+    router.post('/:farmID/product', auth.required,auth.isFarmAdmin, async (req,res, next) => {
         const productData = {
             _id: req.body._id,
             name: req.body.name,
@@ -27,7 +27,7 @@ module.exports = (options) => {
 
     })
 
-    router.put('/:farmID/product/:productID', async (req,res) => {
+    router.put('/:farmID/product/:productID', auth.required,auth.isFarmAdmin, async (req,res) => {
         const productData = {
             _id: req.body._id,
             name: req.body.name,
@@ -48,7 +48,7 @@ module.exports = (options) => {
         }
     })
 
-    router.delete('/:farmID/product/:productID', async (req,res) => {
+    router.delete('/:farmID/product/:productID', auth.required,auth.isFarmAdmin, async (req,res) => {
         try{
             var farm = await repo.deleteProduct(req.params.farmID,req.params.productID)
             farm ?

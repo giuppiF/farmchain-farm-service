@@ -19,6 +19,8 @@ const productServiceSettings = {
     port: process.env.PRODUCT_SERVER_PORT
 }
 
+const authSettings = {
+    JWTSecret: process.env.JWT_SECRET
+}
 
-
-module.exports = Object.assign({}, { dbSettings, serverSettings, uploadServiceSettings, productServiceSettings})
+module.exports = Object.assign({}, { dbSettings, serverSettings, uploadServiceSettings, productServiceSettings,authSettings})

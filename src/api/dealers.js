@@ -4,9 +4,9 @@ const router = require('express').Router();
 const path = require('path')
 
 module.exports = (options) => {
-    const {repo, storageService, storagePath, productService} = options
+    const {repo, storageService, storagePath, productService, auth} = options
 
-    router.post('/:farmID/dealer', async (req,res) => {
+    router.post('/:farmID/dealer',auth.required,auth.isFarmAdmin, async (req,res) => {
         try{
             var dealerData = {
                 name: req.body.name,
@@ -38,7 +38,7 @@ module.exports = (options) => {
 
     })
 
-    router.put('/:farmID/dealer/:dealerID', async (req,res) => {
+    router.put('/:farmID/dealer/:dealerID', auth.required,auth.isFarmAdmin,async (req,res) => {
 
         var dealerData = {
             _id: req.params.dealerID,
@@ -92,7 +92,7 @@ module.exports = (options) => {
         }
     })
 
-    router.delete('/:farmID/dealer/:dealerID', async (req,res) => {
+    router.delete('/:farmID/dealer/:dealerID', auth.required,auth.isFarmAdmin,  async (req,res) => {
         try{
             var pathname = path.join(storagePath, req.originalUrl)
             var dealer = await repo.getDealer(req.params.farmID,req.params.dealerID)
