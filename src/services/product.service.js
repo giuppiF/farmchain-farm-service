@@ -3,12 +3,15 @@ const axios = require('axios')
 
 const productService = (options) => {
 
+    const serviceToken = "Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYWlsIjoiY2lyY29sb0BsZXR0b3JpLml0IiwiaWQiOiI1Y2RlYzVkNzJjN2UzZTAwMGY0YTk3OGQiLCJmYXJtIjoiNWMwODFiN2ZiNjc4MTcwMDBlMDc4Y2E5IiwiZXhwIjoxNTYzMjg4MTE1LCJpYXQiOjE1NTgxMDQxMTV9.2ZkA0WqRiHt1RDqBrMPDaux-vjkkpVuXOsHcgJ-QA3o"
+
     const updateProductLot = async (productId,lot) => {
         try{
             const url = `http://${options.host}:${options.port}/product/${productId}/lot/${lot._id}`
             let config = {
                 headers: {
                 "Content-Type" : "application/json",
+                "Authorization" : serviceToken
                 }
             }
             var response = await axios.put(url,lot,config)
@@ -24,6 +27,7 @@ const productService = (options) => {
             let config = {
                 headers: {
                 "Content-Type" : "application/json",
+                "Authorization" : serviceToken
                 }
             }
             var response = await axios.delete(url,config)
@@ -39,6 +43,7 @@ const productService = (options) => {
             let config = {
                 headers: {
                 "Content-Type" : "application/json",
+                "Authorization" : serviceToken
                 }
             }
             var response = await axios.put(url,dealer,config)
@@ -53,6 +58,7 @@ const productService = (options) => {
             let config = {
                 headers: {
                 "Content-Type" : "application/json",
+                "Authorization" : serviceToken
                 }
             }
             var response = await axios.delete(url,config)
@@ -69,6 +75,7 @@ const productService = (options) => {
             let config = {
                 headers: {
                 "Content-Type" : "application/json",
+                "Authorization" : serviceToken
                 }
             }
             var response = await axios.put(url,farm,config)
