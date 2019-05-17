@@ -72,7 +72,8 @@ module.exports = (options) => {
 
             var updateProductsDealers = farm.products.map( async (product) => {
                 try{
-                    await productService.updateProductDealer(product._id, dealerData)
+                    const { headers: { authorizationToken } } = req;
+                    await productService.updateProductDealer(product._id, dealerData,authorizationToken)
                 } catch (err) {
                     if(err.message != 404 ){
                         res.status(400).send({'msg' : err.message})
@@ -102,7 +103,8 @@ module.exports = (options) => {
             var farm = await repo.deleteDealer(req.params.farmID,req.params.dealerID)
             var deleteProductsDealer = farm.products.map( async (product) => {
                 try{
-                    await productService.deleteProductDealer(product._id, req.params.dealerID)
+                    const { headers: { authorizationToken } } = req;
+                    await productService.deleteProductDealer(product._id, req.params.dealerID,authorizationToken)
                 } catch (err) {
                     if(err.message != 404 ){
                         res.status(400).send({'msg' : err})

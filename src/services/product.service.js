@@ -3,9 +3,8 @@ const axios = require('axios')
 
 const productService = (options) => {
 
-    const serviceToken = "Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYWlsIjoiY2lyY29sb0BsZXR0b3JpLml0IiwiaWQiOiI1Y2RlYzVkNzJjN2UzZTAwMGY0YTk3OGQiLCJmYXJtIjoiNWMwODFiN2ZiNjc4MTcwMDBlMDc4Y2E5IiwiZXhwIjoxNTYzMjg4MTE1LCJpYXQiOjE1NTgxMDQxMTV9.2ZkA0WqRiHt1RDqBrMPDaux-vjkkpVuXOsHcgJ-QA3o"
-
-    const updateProductLot = async (productId,lot) => {
+    
+    const updateProductLot = async (productId,lot,serviceToken) => {
         try{
             const url = `http://${options.host}:${options.port}/product/${productId}/lot/${lot._id}`
             let config = {
@@ -21,7 +20,7 @@ const productService = (options) => {
         }
     }
 
-    const deleteProductLot = async (productId,lotId) => {
+    const deleteProductLot = async (productId,lotId,serviceToken) => {
         try{
             const url = `http://${options.host}:${options.port}/product/${productId}/lot/${lotId}`
             let config = {
@@ -37,7 +36,7 @@ const productService = (options) => {
         }
     }
     
-    const updateProductDealer = async (productId,dealer) => {
+    const updateProductDealer = async (productId,dealer,serviceToken) => {
         try{
             const url = `http://${options.host}:${options.port}/product/${productId}/dealer/${dealer._id}`
             let config = {
@@ -52,7 +51,7 @@ const productService = (options) => {
             throw  Error(err.response.status)
         }
     }
-    const deleteProductDealer = async (productId,dealerId) => {
+    const deleteProductDealer = async (productId,dealerId,serviceToken) => {
         try{
             const url = `http://${options.host}:${options.port}/product/${productId}/dealer/${dealerId}`
             let config = {
@@ -69,7 +68,7 @@ const productService = (options) => {
     }
 
 
-    const updateProductFarm = async (productId,farm) => {
+    const updateProductFarm = async (productId,farm,serviceToken) => {
         try{
             const url = `http://${options.host}:${options.port}/product/${productId}/farm`
             let config = {

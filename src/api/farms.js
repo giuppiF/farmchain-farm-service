@@ -103,7 +103,8 @@ module.exports = (options) => {
 
             farm.products.map(
                 async (product) => {
-                    var product = await productService.updateProductFarm(product.id, productFarmData)
+                    const { headers: { authorizationToken } } = req;
+                    var product = await productService.updateProductFarm(product.id, productFarmData,authorizationToken)
                 }
             )
             
