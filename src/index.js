@@ -31,7 +31,8 @@ mediator.on('db.ready', async (db) => {
         storagePath: config.uploadServiceSettings.path,
         storageService: storageService,
         productService: productService,
-        auth: auth
+        auth: auth,
+        swaggerOptions: config.swaggerOptions
     })
 
     

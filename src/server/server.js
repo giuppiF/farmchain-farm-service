@@ -5,6 +5,11 @@ const bodyParser = require('body-parser');
 const formData = require("express-form-data");
 const cors = require("cors")
 
+const swaggerJsdoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+
+
+
 const start  = (options) => {
     return new Promise((resolve,reject) =>{
         if(!options.repo){
@@ -21,11 +26,20 @@ const start  = (options) => {
         // helmet aggiunge header di sicurezza
         app.use(helmet())
         app.use(bodyParser.json()); 
-	app.use(cors())
+	    app.use(cors())
         app.use(formData.parse({
             uploadDir: options.storagePath,
             autoClean: true
         }));
+
+        // Swagger API docs implementation
+        const swaggerSpec = swaggerJsdoc(options.swaggerOptions);
+        app.use('/farm/api-docs.json', (req,res)=>{
+            res.send(swaggerSpec)
+        });
+        app.use('/farm/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+
         app.use((err,req,res,next) => {
             reject(new Error('Something went wrong!, err:' + err))
             res.status(500).send('Something went wrong!')

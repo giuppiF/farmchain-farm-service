@@ -6,10 +6,127 @@ const path = require('path')
 module.exports = (options) => {
     const {repo, storageService, storagePath, productService, auth} = options
 
+   /**
+   * @swagger
+   * tags:
+   *   name: Farm
+   *   description: Farm API list
+   */
+   /**
+   * @swagger
+   * components:
+   *   securitySchemes:
+   *     bearerAuth:            # arbitrary name for the security scheme
+   *       type: http
+   *       scheme: bearer
+   *       bearerFormat: JWT
+   */
+
+   /**
+   * @swagger
+   * /farm:
+   *   get:
+   *     summary: Get All Farms
+   *     description: Lists all farms
+   *     tags: [Farm]
+   *     produces:
+   *       - application/json
+   *     responses:
+   *             200:
+   *                 content:
+   *                     application/json:
+   *                        schema:
+   *                            $ref: '#/components/schemas/Farm'
+   */
     router.get('/', async (req,res) => {
         var farms = await repo.getAllFarms();
         res.status(status.OK).json(farms)
     })
+  /**
+   * @swagger
+   * /farm:
+   *   post:
+   *     summary: Create Farm
+   *     description: API for farm creation
+   *     tags: [Farm]
+   *     produces:
+   *       - application/json
+   *     requestBody:
+   *        content:
+   *            multipart/form-data:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                   name:
+   *                     name: name
+   *                     description: Farm's name
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: La bella Fattoria
+   *                   address:
+   *                     name: address
+   *                     description: Farm's address
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: Via Roma 10 - 10100  Torino
+   *                   mail:
+   *                     name: mail
+   *                     description: Farm's mail
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: mail@mail.it
+   *                   phone:
+   *                     name: phone
+   *                     description: Farm's phone
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: 321 23132312
+   *                   logo:
+   *                     name: logo
+   *                     description: Farm's logo
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     format: binary
+   *                   websiteURL:
+   *                     name: websiteURL
+   *                     description: Farm's website URL
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: www.farm.it
+   *                   description:
+   *                     name: description
+   *                     description: Farm's description
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: Descrizione della farm
+   *               required:
+   *                    - name
+   *                    - address
+   *                    - mail
+   *                    - phone
+   *     responses:
+   *             200:
+   *                 description: Farm created object
+   *                 content:
+   *                     application/json:
+   *                        schema:
+   *                            $ref: '#/components/schemas/Farm'
+   *             400:
+   *                 description: Farm not created for a validation error
+   *             401:
+   *                 description: Not authorized
+   *             404:
+   *                 description: Farm not created for a generic database error
+   *                            
+   */
+
 
     router.post('/', async (req,res) => {
         const farmData = {
@@ -45,6 +162,40 @@ module.exports = (options) => {
         }
     })
 
+     /**
+   * @swagger
+   * /farm/{farmId}:
+   *   get:
+   *     summary: Get Farm
+   *     description: Get a single farm
+   *     security:
+   *        - bearerAuth: []
+   *     tags: [Farm]
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *        - name: farmId
+   *          in: path
+   *          required: true
+   *          description: Farm id string
+   *          schema:
+   *             type : string
+   *             format: byte
+   *             minimum: 1
+   *     responses:
+   *             200:
+   *                 content:
+   *                     application/json:
+   *                        schema:
+   *                            $ref: '#/components/schemas/Farm'
+   *             400:
+   *                 description: Application error
+   *             401:
+   *                 description: Not authorized
+   *             404:
+   *                 description: Farm not found
+   */
+
     router.get('/:farmID',auth.required,auth.isFarmAdmin, async (req,res) => {
         try{
             var farm = await repo.getFarm(req.params.farmID)
@@ -56,7 +207,157 @@ module.exports = (options) => {
             res.status(400).send({'msg': err.message})
         }
     })
-
+     /**
+   * @swagger
+   * /farm/{farmId}:
+   *   put:
+   *     summary: Update Farm
+   *     description: Update a farm
+   *     tags: [Farm]
+   *     security:
+   *        - bearerAuth: []
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *        - name: farmId
+   *          in: path
+   *          required: true
+   *          description: Farm id string
+   *          schema:
+   *             type : string
+   *             format: byte
+   *             minimum: 1
+   *     requestBody:
+   *        content:
+   *            multipart/form-data:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                   name:
+   *                     name: name
+   *                     description: Farm's name
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: La bella Fattoria
+   *                   address:
+   *                     name: address
+   *                     description: Farm's address
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: Via Roma 10 - 10100  Torino
+   *                   mail:
+   *                     name: mail
+   *                     description: Farm's mail
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: mail@mail.it
+   *                   phone:
+   *                     name: phone
+   *                     description: Farm's phone
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: 321 23132312
+   *                   logo:
+   *                     name: logo
+   *                     description: Farm's logo
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     format: binary
+   *                   websiteURL:
+   *                     name: websiteURL
+   *                     description: Farm's website URL
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: www.farm.it
+   *                   description:
+   *                     name: description
+   *                     description: Farm's description
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: Descrizione della farm
+   *               required:
+   *                    - name
+   *                    - address
+   *                    - mail
+   *                    - phone
+   *            application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                   name:
+   *                     name: name
+   *                     description: Farm's name
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: La bella Fattoria
+   *                   address:
+   *                     name: address
+   *                     description: Farm's address
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: Via Roma 10 - 10100  Torino
+   *                   mail:
+   *                     name: mail
+   *                     description: Farm's mail
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: mail@mail.it
+   *                   phone:
+   *                     name: phone
+   *                     description: Farm's phone
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: 321 23132312
+   *                   logo:
+   *                     name: logo
+   *                     description: Farm's logo
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: /product/5c56d364d7123300b6462ed5/1549194089941-logo_farmchain.JPG
+   *                   websiteURL:
+   *                     name: websiteURL
+   *                     description: Farm's website URL
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: www.farm.it
+   *                   description:
+   *                     name: description
+   *                     description: Farm's description
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: Descrizione della farm
+   *               required:
+   *                    - name
+   *                    - address
+   *                    - mail
+   *                    - phone
+   *     responses:
+   *             200:
+   *                 content:
+   *                     application/json:
+   *                        schema:
+   *                            $ref: '#/components/schemas/Farm'
+   *             400:
+   *                 description: Application error
+   *             401:
+   *                 description: Not authorized
+   *             404:
+   *                 description: Farm not found
+   */
     router.put('/:farmID',auth.required,auth.isFarmAdmin,  async (req,res) => {
         const farmData = {
             name: req.body.name,
@@ -120,6 +421,39 @@ module.exports = (options) => {
         }
     })
 
+     /**
+   * @swagger
+   * /farm/{farmId}:
+   *   delete:
+   *     summary: Delete Farm
+   *     description: Delete a single farm
+   *     security:
+   *        - bearerAuth: []
+   *     tags: [Farm]
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *        - name: farmId
+   *          in: path
+   *          required: true
+   *          description: Farm id string
+   *          schema:
+   *             type : string
+   *             format: byte
+   *             minimum: 1
+   *     responses:
+   *             200:
+   *                 content:
+   *                     application/json:
+   *                        schema:
+   *                            $ref: '#/components/schemas/Farm'
+   *             400:
+   *                 description: Application error
+   *             401:
+   *                 description: Not authorized
+   *             404:
+   *                 description: Farm not found
+   */
     router.delete('/:farmID',  async (req,res) => {
         try{
 

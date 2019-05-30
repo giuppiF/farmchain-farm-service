@@ -5,7 +5,110 @@ const path = require('path')
 
 module.exports = (options) => {
     const {repo, storageService, storagePath, productService, auth} = options
+   /**
+   * @swagger
+   * tags:
+   *   name: FarmDealers
+   *   description: List Farm's Dealers API
+   */
 
+   /**
+   * @swagger
+   * /farm/{farmId}/dealer:
+   *   post:
+   *     summary: Create Farm's Dealer
+   *     description: API for farm's dealer creation
+   *     tags: [FarmDealers]
+   *     security:
+   *        - bearerAuth: []
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *        - name: farmId
+   *          in: path
+   *          required: true
+   *          description: Farm id string
+   *          schema:
+   *             type : string
+   *             format: byte
+   *             minimum: 1
+   *     requestBody:
+   *        content:
+   *            multipart/form-data:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                   name:
+   *                     name: name
+   *                     description: Dealer's name
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: Il bel distributore
+   *                   address:
+   *                     name: address
+   *                     description: Dealer's address
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: Via Roma 10 - 10100  Torino
+   *                   mail:
+   *                     name: mail
+   *                     description: Dealer's mail
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: mail@mail.it
+   *                   phone:
+   *                     name: phone
+   *                     description: Dealer's phone
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: 321 23132312
+   *                   image:
+   *                     name: logo
+   *                     description: Dealer's logo
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     format: binary
+   *                   site:
+   *                     name: site
+   *                     description: Dealer's website URL
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: www.Dealer.it
+   *                   description:
+   *                     name: description
+   *                     description: Dealer's description
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: Descrizione del distributore
+   *               required:
+   *                    - name
+   *                    - address
+   *                    - mail
+   *                    - phone
+   *                    - site
+   *                    - description
+   *     responses:
+   *             200:
+   *                 description: Farm object
+   *                 content:
+   *                     application/json:
+   *                        schema:
+   *                            $ref: '#/components/schemas/Farm'
+   *             400:
+   *                 description: Dealer not created for a validation error
+   *             401:
+   *                 description: Not authorized
+   *             404:
+   *                 description: Dealer not created for a generic database error
+   *                            
+   */
     router.post('/:farmID/dealer',auth.required,auth.isFarmAdmin, async (req,res) => {
         try{
             var dealerData = {
@@ -37,7 +140,159 @@ module.exports = (options) => {
         }
 
     })
-
+     /**
+   * @swagger
+   * /farm/{farmId}/dealer/{dealerId}:
+   *   put:
+   *     summary: Create Farm's Dealer
+   *     description: API for farm's dealer update
+   *     tags: [FarmDealers]
+   *     security:
+   *        - bearerAuth: []
+   *     parameters:
+   *        - name: farmId
+   *          in: path
+   *          required: true
+   *          description: Farm id string
+   *          schema:
+   *             type : string
+   *             format: byte
+   *             minimum: 1
+   *        - name: dealerId
+   *          in: path
+   *          required: true
+   *          description: Dealer id string
+   *          schema:
+   *             type : string
+   *             format: byte
+   *             minimum: 1
+   *     produces:
+   *       - application/json
+   *     requestBody:
+   *        content:
+   *            multipart/form-data:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                   name:
+   *                     name: name
+   *                     description: Dealer's name
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: Il bel distributore
+   *                   address:
+   *                     name: address
+   *                     description: Dealer's address
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: Via Roma 10 - 10100  Torino
+   *                   mail:
+   *                     name: mail
+   *                     description: Dealer's mail
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: mail@mail.it
+   *                   phone:
+   *                     name: phone
+   *                     description: Dealer's phone
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: 321 23132312
+   *                   image:
+   *                     name: logo
+   *                     description: Dealer's logo
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     format: binary
+   *                   site:
+   *                     name: site
+   *                     description: Dealer's website URL
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: www.Dealer.it
+   *               required:
+   *                    - name
+   *                    - address
+   *                    - mail
+   *                    - phone
+   *                    - site
+   *                    - description
+   *                    - image
+   *            application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                   name:
+   *                     name: name
+   *                     description: Dealer's name
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: Il bel distributore
+   *                   address:
+   *                     name: address
+   *                     description: Dealer's address
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: Via Roma 10 - 10100  Torino
+   *                   mail:
+   *                     name: mail
+   *                     description: Dealer's mail
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: mail@mail.it
+   *                   phone:
+   *                     name: phone
+   *                     description: Dealer's phone
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: 321 23132312
+   *                   image:
+   *                     name: logo
+   *                     description: Dealer's logo
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: /product/5c56d364d7123300b6462ed5/1549194089941-logo_farmchain.JPG
+   *                   site:
+   *                     name: site
+   *                     description: Dealer's website URL
+   *                     in: formData
+   *                     required: true
+   *                     type: string
+   *                     example: www.Dealer.it
+   *               required:
+   *                    - name
+   *                    - address
+   *                    - mail
+   *                    - phone
+   *                    - site
+   *                    - description
+   *                    - image
+   *     responses:
+   *             200:
+   *                 description: Farm object
+   *                 content:
+   *                     application/json:
+   *                        schema:
+   *                            $ref: '#/components/schemas/Farm'
+   *             400:
+   *                 description: Dealer not updated for a validation error
+   *             401:
+   *                 description: Not authorized
+   *             404:
+   *                 description: Dealer not updated for a generic database error
+   *                            
+   */
     router.put('/:farmID/dealer/:dealerID', auth.required,auth.isFarmAdmin,async (req,res) => {
 
         var dealerData = {
@@ -93,6 +348,48 @@ module.exports = (options) => {
         }
     })
 
+
+     /**
+   * @swagger
+   * /farm/{farmId}/dealer/{dealerId}:
+   *   delete:
+   *     summary: Delete Farm's Dealer
+   *     description: Delete a single dealer
+   *     security:
+   *        - bearerAuth: []
+   *     tags: [FarmDealers]
+   *     produces:
+   *       - application/json
+   *     parameters:
+   *        - name: farmId
+   *          in: path
+   *          required: true
+   *          description: Farm id string
+   *          schema:
+   *             type : string
+   *             format: byte
+   *             minimum: 1
+   *        - name: dealerId
+   *          in: path
+   *          required: true
+   *          description: Dealer id string
+   *          schema:
+   *             type : string
+   *             format: byte
+   *             minimum: 1
+   *     responses:
+   *             200:
+   *                 content:
+   *                     application/json:
+   *                        schema:
+   *                            $ref: '#/components/schemas/Farm'
+   *             400:
+   *                 description: Application error
+   *             401:
+   *                 description: Not authorized
+   *             404:
+   *                 description: Dealer not found
+   */
     router.delete('/:farmID/dealer/:dealerID', auth.required,auth.isFarmAdmin,  async (req,res) => {
         try{
             var pathname = path.join(storagePath, req.originalUrl)
