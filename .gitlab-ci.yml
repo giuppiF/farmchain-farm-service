@@ -6,6 +6,9 @@ stages:
 build:
   stage: build
   image: backstreetacademy/docker-aws
+  only:
+    refs:
+      - master
   services: 
     - docker:dind
   script: 
