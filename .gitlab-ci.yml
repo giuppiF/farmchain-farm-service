@@ -1,0 +1,12 @@
+stages:
+ - build
+#=========
+# Build
+#=========
+build:
+  stage: build
+  image: backstreetacademy/docker-aws
+  services: 
+    - docker:dind
+  script: 
+    - ./build.sh
