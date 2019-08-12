@@ -9,4 +9,5 @@ build:
   services: 
     - docker:dind
   script: 
+    - chmod +x ./build.sh
     - ./build.sh
