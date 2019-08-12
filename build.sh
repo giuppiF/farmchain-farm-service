@@ -1,4 +1,5 @@
-#!/bin/shecho "Login to ECR Repository"
+#!/bin/sh
+echo "Login to ECR Repository"
 $(aws ecr get-login --no-include-email --region eu-west-1)
 echo "Preparation task"
 echo "Build Docker Image for $SERVICE_NAME"
