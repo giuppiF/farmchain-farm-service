@@ -42,7 +42,7 @@ const start  = (options) => {
 
         app.use((err,req,res,next) => {
             reject(new Error('Something went wrong!, err:' + err))
-            res.status(500).send('Something went wrong!')
+            res.status(500).send('Something went wrong!' + err)
         })
         
         const farmApi = require('../api/farms')(options)
