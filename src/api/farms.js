@@ -145,10 +145,9 @@ module.exports = (options) => {
             if(req.files.logo){
                 var logo = req.files.logo
     
-                var filename = Date.now()+ '-' + logo.originalFilename
-                var pathname = path.join( req.originalUrl, farm._id.toString())
-                var completePath = path.join(storagePath,pathname)
-                var uploadfile = await storageService.saveToDir(logo.path, filename, completePath )
+                var filename = farm.name + '-' + logo.originalFilename
+                var pathname = path.join(req.originalUrl, farm._id.toString())
+                var uploadfile = await storageService.uploadFileInS3(logo.path, filename, pathname )
                 farm.logo = path.join(pathname, filename)
                 farm.save()
             }
@@ -383,18 +382,16 @@ module.exports = (options) => {
             if(req.files.logo){
                 
                 var pathname = req.originalUrl
-                var completePathname = path.join(storagePath, pathname)
+                console.log("ECCOLOOOOOOOOO" +pathname)
                 var farm = await repo.getFarm(req.params.farmID)
                 if(farm.logo)
-                    var deleteFile = await storageService.deleteFile(farm.logo,storagePath)            
+                    var deleteFile = await storageService.deleteFileFromS3(farm.logo)            
 
                 var logo = req.files.logo    
-                var filename = Date.now()+ '-' + logo.originalFilename
-                
-                var uploadfile = await storageService.saveToDir(logo.path, filename, completePathname )
+                var filename = farm.name + '-' + logo.originalFilename
+                var uploadfile = await storageService.uploadFileInS3(logo.path, filename, pathname )
                 farmData.logo = path.join(pathname,filename)
                 
-
             }else{
                 farmData.logo=req.body.logo
             }
@@ -457,12 +454,10 @@ module.exports = (options) => {
     router.delete('/:farmID',  async (req,res) => {
         try{
 
-            var pathname = path.join(storagePath, req.originalUrl)
+
             var farm = await repo.getFarm(req.params.farmID)
             if(farm.logo)
-                var deleteFile = await storageService.deleteFile(farm.logo,storagePath)  
-                var deleteDir = await storageService.deleteDir(pathname)  
-
+                var deleteFile = await storageService.deleteFileFromS3(farm.logo)  
             farm = await repo.deleteFarm(req.params.farmID)
             farm ?
                 res.status(status.OK).json(farm)

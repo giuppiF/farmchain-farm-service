@@ -88,10 +88,10 @@ module.exports = (options) => {
             if(req.files.image){
                 var image = req.files.image
     
-                var filename = Date.now()+ '-' + image.originalFilename
+                var filename = lot.name + '-' + image.originalFilename
                 var pathname = path.join(req.originalUrl, lot._id.toString())
-                var completePath = path.join(storagePath,pathname)
-                var uploadfile = await storageService.saveToDir(image.path, filename, completePath )
+                
+                var uploadfile = await storageService.uploadFileInS3(image.path, filename, pathname )
                 lotData.image = path.join(pathname,filename)
             }
             
@@ -217,15 +217,14 @@ module.exports = (options) => {
             if(req.files.image){
                 
                 var pathname = req.originalUrl
-                var completePathname = path.join(storagePath, pathname)
                 var lot = await repo.getLot(req.params.farmID,lotData._id)
                 if(lot.image)
-                    var deleteFile = await storageService.deleteFile(lot.image,storagePath)            
+                    var deleteFile = await storageService.deleteFileFromS3(lot.image)            
 
                 var image = req.files.image    
-                var filename = Date.now()+ '-' + image.originalFilename
+                var filename =lot.name + '-' + image.originalFilename
                 
-                var uploadfile = await storageService.saveToDir(image.path, filename, completePathname )
+                var uploadfile = await storageService.uploadFileInS3(image.path, filename, pathname )
                 lotData.image = path.join(pathname,filename)
                 
 
@@ -300,11 +299,10 @@ module.exports = (options) => {
    */
     router.delete('/:farmID/lot/:lotID', auth.required,auth.isFarmAdmin, async (req,res) => {
         try{
-            var pathname = path.join(storagePath, req.originalUrl)
+
             var lot = await repo.getLot(req.params.farmID,req.params.lotID)
             if(lot.image)
-                var deleteFile = await storageService.deleteFile(lot.image,storagePath)  
-                var deleteDir = await storageService.deleteDir(pathname)  
+                var deleteFile = await storageService.deleteFileFromS3(lot.image)  
             var farm = await repo.deleteLot(req.params.farmID,req.params.lotID)
 
             var deleteProductsLot = farm.products.map( async (product) => {

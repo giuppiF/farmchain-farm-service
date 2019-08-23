@@ -125,10 +125,9 @@ module.exports = (options) => {
             if(req.files.image){
                 var image = req.files.image
     
-                var filename = Date.now()+ '-' + image.originalFilename
+                var filename = dealer.name + '-' + image.originalFilename
                 var pathname = path.join(req.originalUrl, dealer._id.toString())
-                var completePathname = path.join(storagePath, pathname)
-                var uploadfile = await storageService.saveToDir(image.path, filename, completePathname )
+                var uploadfile = await storageService.uploadFileInS3(image.path, filename, pathname )
                 dealerData.image = path.join(pathname, filename)
             }
             
@@ -307,15 +306,15 @@ module.exports = (options) => {
             if(req.files.image){
                 
                 var pathname = req.originalUrl
-                var completePathname = path.join(storagePath, pathname)
+                
                 var dealer = await repo.getDealer(req.params.farmID,req.params.dealerID)
                 if(dealer.image)
-                    var deleteFile = await storageService.deleteFile(dealer.image,storagePath)            
+                    var deleteFile = await storageService.deleteFileFromS3(dealer.image)            
 
                 var image = req.files.image    
-                var filename = Date.now()+ '-' + image.originalFilename
+                var filename = dealer.name + '-' + image.originalFilename
                 
-                var uploadfile = await storageService.saveToDir(image.path, filename, completePathname )
+                var uploadfile = await storageService.uploadFileInS3(image.path, filename, pathname )
                 dealerData.image = path.join(pathname,filename)
                 
 
@@ -392,11 +391,11 @@ module.exports = (options) => {
    */
     router.delete('/:farmID/dealer/:dealerID', auth.required,auth.isFarmAdmin,  async (req,res) => {
         try{
-            var pathname = path.join(storagePath, req.originalUrl)
+
             var dealer = await repo.getDealer(req.params.farmID,req.params.dealerID)
             if(dealer.image)
-                var deleteFile = await storageService.deleteFile(dealer.image,storagePath)  
-                var deleteDir = await storageService.deleteDir(pathname)  
+                var deleteFile = await storageService.deleteFileFromS3(dealer.image)  
+ 
             var farm = await repo.deleteDealer(req.params.farmID,req.params.dealerID)
             var deleteProductsDealer = farm.products.map( async (product) => {
                 try{
