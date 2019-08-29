@@ -25,4 +25,5 @@ deploy:
     refs:
       - master
   script: 
-    - aws ecs update-service --force-new-deployment --service ${SERVICE_NAME} --region eu-west-1
+    - chmod +x ./deploy.sh
+    - ./deploy.sh
