@@ -25,4 +25,4 @@ deploy:
     refs:
       - master
   script: 
-    - ecs deploy  farmchain-cluster  farm-service --timeout=1800
+    - aws ecs update-service --force-new-deployment --service $SERVICE_NAME
