@@ -14,3 +14,14 @@ build:
   script: 
     - chmod +x ./build.sh
     - ./build.sh
+#=========
+# Deploy
+#=========
+deploy:
+  stage: deploy
+  image: backstreetacademy/docker-aws
+  only:
+    refs:
+      - master
+  script: 
+    - ecs deploy  farmchain-cluster  farm-service --timeout=1800
