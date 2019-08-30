@@ -25,7 +25,7 @@ const authSettings = {
 const host = 'http://farm:' + serverSettings.port
 
 const kafkaSettings = {
-  server: 'kafka:9092',
+  server: 'localhost:9092',
 };
 
 const swaggerOptions = {
