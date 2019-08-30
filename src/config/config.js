@@ -22,7 +22,7 @@ const productServiceSettings = {
 const authSettings = {
     JWTSecret: process.env.JWT_SECRET
 }
-const host = 'http://farm:' + serverSettings.port
+const host = 'http://localhost:' + serverSettings.port
 
 const kafkaSettings = {
   server: 'localhost:9092',
