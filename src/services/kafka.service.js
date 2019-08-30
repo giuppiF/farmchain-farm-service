@@ -62,8 +62,8 @@ const deleteProduct = async (repo,product) => {
 const kafkaService = (options, producer,client) => {
   var repo = options.repo;
   try {
-    const Consumer = kafka.Consumer;
-    var kafkaOptions = { topic: 'service.product', partition: 0 }
+    const Consumer = kafka.Consumer,
+    var kafkaOptions = [{ topic: 'service.product', partition: 0 }]
     var kafkaConsumerOptions =  {
       autoCommit: true,
       fetchMaxWaitMs: 1000,
