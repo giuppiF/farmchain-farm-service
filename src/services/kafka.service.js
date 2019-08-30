@@ -17,7 +17,7 @@ const createProduct = async (repo,product) => {
   try{
     var farm = await repo.addProduct(product.farm._id,productData)
     farm ?
-      console.log('okkkk')
+      console.log('okkkk aggiorno farm ' + product.farm._id + "con prodotto " + productData.name)
     :
       console.log('error, product not found')
   } catch (err) {
@@ -93,7 +93,6 @@ const kafkaService = (options, producer,client) => {
     consumer.on('message', async function(message) {
 
       var message_parsed = JSON.parse(message.value);
-      console.log("arrivato dato " + message_parsed.data)
       productFunctions[message_parsed.event](repo,message_parsed.data)
 
     })
