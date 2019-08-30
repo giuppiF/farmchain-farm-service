@@ -15,11 +15,15 @@ mediator.on('db.ready', async (db) => {
         awsSettings: config.awsSettings
     })
 
+    
     var productService = await services.productService.start({
         host: config.productServiceSettings.host,
         port: config.productServiceSettings.port
     })
-
+    var kafkaService = await services.kafkaService.start({
+        kafkaSettings: config.kafkaSettings,
+        repo: repo,
+    })
     var auth = await config.authConfig.start({
         secret: config.authSettings.JWTSecret,
         repo: repo
@@ -31,8 +35,9 @@ mediator.on('db.ready', async (db) => {
         storagePath: config.uploadServiceSettings.path,
         storageService: storageService,
         productService: productService,
+        kafkaService: kafkaService,
         auth: auth,
-        swaggerOptions: config.swaggerOptions
+        swaggerOptions: config.swaggerOptions,
     })
 
     

@@ -321,27 +321,16 @@ module.exports = (options) => {
             }else{
                 dealerData.image=req.body.image
             }
-
+            
             var farm = await repo.updateDealer(req.params.farmID,req.params.dealerID,dealerData) 
+            var publishEvent =await options.kafkaService.publishEvent("service.farm","update.dealer",dealerData);
 
-            var updateProductsDealers = farm.products.map( async (product) => {
-                try{
-                    const { headers: { authorization } } = req;
-                    await productService.updateProductDealer(product._id, dealerData,authorization)
-                } catch (err) {
-                    if(err.message != 404 ){
-                        res.status(400).send({'msg' : err.message})
-                        return
-                    }
-                }
-                
-            })
-            Promise.all(updateProductsDealers).then( async ()=>{
-                farm ?
-                    res.status(status.OK).json(farm)
-                :            
-                    res.status(404).send()
-            })
+
+            farm ?
+                res.status(status.OK).json(farm)
+            :            
+                res.status(404).send()
+
         } catch (err) {
             res.status(400).send({'msg' : err.message})
         }
@@ -397,24 +386,13 @@ module.exports = (options) => {
                 var deleteFile = await storageService.deleteFileFromS3(dealer.image)  
  
             var farm = await repo.deleteDealer(req.params.farmID,req.params.dealerID)
-            var deleteProductsDealer = farm.products.map( async (product) => {
-                try{
-                    const { headers: { authorization } } = req;
-                    await productService.deleteProductDealer(product._id, req.params.dealerID,authorization)
-                } catch (err) {
-                    if(err.message != 404 ){
-                        res.status(400).send({'msg' : err})
-                        return
-                    }
-                }
-                
-            })
-            Promise.all(deleteProductsDealer).then( async ()=>{
-                farm ?
-                    res.status(status.OK).json(farm)
-                :            
-                    res.status(404).send()
-            })
+            var publishEvent =await options.kafkaService.publishEvent("service.farm","delete.dealer",dealer);
+
+            farm ?
+                res.status(status.OK).json(farm)
+            :            
+                res.status(404).send()
+
         } catch (err) {
             res.status(400).send({'msg' : err.message})
         }

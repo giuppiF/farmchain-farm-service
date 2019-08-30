@@ -40,6 +40,7 @@ module.exports = (options) => {
    */
     router.get('/', async (req,res) => {
         var farms = await repo.getAllFarms();
+
         res.status(status.OK).json(farms)
     })
   /**
@@ -368,21 +369,12 @@ module.exports = (options) => {
             description: req.body.description
         }
 
-        const productFarmData = {
-            name: req.body.name,
-            address: req.body.address,
-            mail: req.body.mail,
-            phone: req.body.phone,
-            logo: req.body.logo,
-            websiteURL: req.body.websiteURL,
-            description: req.body.description
-        }
         try{
 
             if(req.files.logo){
                 
                 var pathname = req.originalUrl
-                console.log("ECCOLOOOOOOOOO" +pathname)
+
                 var farm = await repo.getFarm(req.params.farmID)
                 if(farm.logo)
                     var deleteFile = await storageService.deleteFileFromS3(farm.logo)            
@@ -397,17 +389,8 @@ module.exports = (options) => {
             }
             var farm = await repo.updateFarm(req.params.farmID,farmData)
 
-            productFarmData._id = farm._id
-
-            farm.products.map(
-                async (product) => {
-                    const { headers: { authorization } } = req;
-                    var product = await productService.updateProductFarm(product.id, productFarmData,authorization)
-                }
-            )
-            
-
-
+            var publishEvent =await options.kafkaService.publishEvent("service.farm","update.farm",farm);
+        
             farm ?
                 res.status(status.OK).json(farm)
             :

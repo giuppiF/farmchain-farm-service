@@ -1,3 +1,4 @@
 const storageService = require('./storage.service')
 const productService = require('./product.service')
-module.exports = Object.assign({}, {storageService, productService})
+const kafkaService = require('./kafka.service')
+module.exports = Object.assign({}, {storageService, productService,kafkaService})

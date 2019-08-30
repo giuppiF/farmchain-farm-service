@@ -233,25 +233,14 @@ module.exports = (options) => {
             }
 
             var farm = await repo.updateLot(req.params.farmID,lotData._id,lotData) 
+            var publishEvent =await options.kafkaService.publishEvent("service.farm","update.lot",lotData);
+            
 
-            var updateProductsLots = farm.products.map( async (product) => {
-                try{
-                    const { headers: { authorization } } = req;
-                    await productService.updateProductLot(product._id, lotData, authorization)
-                } catch (err) {
-                    if(err.message != 404 ){
-                        res.status(400).send({'msg' : err})
-                        return
-                    }
-                }
-                
-            })
-            Promise.all(updateProductsLots).then( async ()=>{
-                farm ?
-                    res.status(status.OK).json(farm)
-                :            
-                    res.status(404).send()
-            })
+            farm ?
+                res.status(status.OK).json(farm)
+            :            
+                res.status(404).send()
+
         } catch (err) {
             res.status(400).send({'msg' : err.message})
         }
@@ -304,25 +293,13 @@ module.exports = (options) => {
             if(lot.image)
                 var deleteFile = await storageService.deleteFileFromS3(lot.image)  
             var farm = await repo.deleteLot(req.params.farmID,req.params.lotID)
+            var publishEvent =await options.kafkaService.publishEvent("service.farm","delete.lot",lot);
+        
+            farm ?
+                res.status(status.OK).json(farm)
+            :            
+                res.status(404).send()
 
-            var deleteProductsLot = farm.products.map( async (product) => {
-                try{
-                    const { headers: { authorization } } = req;
-                    await productService.deleteProductLot(product._id, req.params.lotID, authorization)
-                } catch (err) {
-                    if(err.message != 404 ){
-                        res.status(400).send({'msg' : err})
-                        return
-                    }
-                }
-                
-            })
-            Promise.all(deleteProductsLot).then( async ()=>{
-                farm ?
-                    res.status(status.OK).json(farm)
-                :            
-                    res.status(404).send()
-            })
         } catch (err) {
             res.status(400).send({'msg' : err.message})
         }

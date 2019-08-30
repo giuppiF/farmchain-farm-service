@@ -53,7 +53,6 @@ const start  = (options) => {
         app.use('/farm',lotsApi)
         app.use('/farm',dealersApi)
         app.use('/farm',productsApi)
-        app.use(express.static(options.storagePath));
 
 
         const server = app.listen(options.port, () => resolve(server))

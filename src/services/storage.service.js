@@ -2,7 +2,7 @@
 const fs = require('fs')
 var path = require('path');
 const AWS = require('aws-sdk');
-
+var mime = require('mime')
 
 
 
@@ -17,6 +17,8 @@ const storageService = (options) => {
           Bucket: options.awsSettings.s3BucketName,
           Body: fs.createReadStream(rawfile),
           Key:  path.join(pathname.replace(/^\/+/g, ''),filename),
+          ContentType: mime.getType(rawfile),
+          ACL: 'public-read'
         }
         s3.upload(params, function (err, data) {
           //handle error
