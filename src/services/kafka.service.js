@@ -93,6 +93,7 @@ const kafkaService = (options, producer,client) => {
     consumer.on('message', async function(message) {
 
       var message_parsed = JSON.parse(message.value);
+      console.log("arrivato dato " + message_parsed.data)
       productFunctions[message_parsed.event](repo,message_parsed.data)
 
     })
