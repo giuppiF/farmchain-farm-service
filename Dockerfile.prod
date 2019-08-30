@@ -6,6 +6,8 @@ COPY ./src/ /app/src/
 
 COPY package.json package-lock.json /app/
 
+RUN mkdir /app/storage
+
 RUN npm install && apk add --no-cache bash
 
 CMD ["node", "src/index.js" ]
