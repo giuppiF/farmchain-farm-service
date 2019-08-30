@@ -25,7 +25,7 @@ const authSettings = {
 const host = 'http://localhost:' + serverSettings.port
 
 const kafkaSettings = {
-  server: 'localhost:9092',
+  server: process.env.KAFKA_HOST + ':' + process.env.KAFKA_PORT,
 };
 
 const swaggerOptions = {
