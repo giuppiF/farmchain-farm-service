@@ -132,7 +132,7 @@ const start = (options) => {
     if (!options) {
       reject(new Error('options settings not supplied!'))
     }
-    const HighLevelProducer = kafka.HighLevelProducer;
+    const Producer = kafka.Producer;
 
     const client = new kafka.KafkaClient({kafkaHost: options.kafkaSettings.server});
 
