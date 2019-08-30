@@ -59,35 +59,23 @@ const deleteProduct = async (repo,product) => {
 }
 }
 
-const kafkaService = (options, producer) => {
+const kafkaService = (options, producer,client) => {
   var repo = options.repo;
   try {
-    const ConsumerGroup = kafka.ConsumerGroup;
-    var kafkaGroupOptions = {
-    kafkaHost: options.kafkaSettings.server , // connect directly to kafka broker (instantiates a KafkaClient)
-    batch: undefined, // put client batch settings if you need them
-    ssl: true, // optional (defaults to false) or tls options hash
-    groupId: 'ProductServiceGroup',
-    sessionTimeout: 15000,
-    // An array of partition assignment protocols ordered by preference.
-    // 'roundrobin' or 'range' string for built ins (see below to pass in custom assignment protocol)
-    protocol: ['roundrobin'],
-    encoding: 'utf8', // default is utf8, use 'buffer' for binary data
-   
-    // Offsets to use for new groups other options could be 'earliest' or 'none' (none will emit an error if no offsets were saved)
-    // equivalent to Java client's auto.offset.reset
-    fromOffset: 'latest', // default
-    commitOffsetsOnFirstJoin: true, // on the very first time this consumer group subscribes to a topic, record the offset returned in fromOffset (latest/earliest)
-    // how to recover from OutOfRangeOffset error (where save offset is past server retention) accepts same value as fromOffset
-    outOfRangeOffset: 'earliest', // default
-    // Callback to allow consumers with autoCommit false a chance to commit before a rebalance finishes
-    // isAlreadyMember will be false on the first connection, and true on rebalances triggered after that
-    onRebalance: (isAlreadyMember, callback) => { callback(); } // or null
-  };
+    const Consumer = kafka.HighLevelConsumer;
+    var kafkaOptions = { topic: 'service.product', partition: 0 }
+    var kafkaConsumerOptions =  {
+      autoCommit: true,
+      fetchMaxWaitMs: 1000,
+      fetchMaxBytes: 1024 * 1024,
+      encoding: 'utf8',
+      fromOffset: false
+    };
   
-  let consumer = new ConsumerGroup(
-    kafkaGroupOptions,
-        ['service.product']
+  let consumer = new Consumer(
+    client,
+    kafkaOptions,
+    kafkaConsumerOptions
     );
 
     var productFunctions = {
@@ -121,8 +109,7 @@ const kafkaService = (options, producer) => {
     let payloads = [
       {
         topic: topic,
-        messages: JSON.stringify({event: event, data: data}),
-        key: data._id
+        messages: JSON.stringify({event: event, data: data})
       }
     ];
     let push_status = producer.send(payloads, (err, data) => {
@@ -149,10 +136,10 @@ const start = (options) => {
 
     const client = new kafka.KafkaClient({kafkaHost: options.kafkaSettings.server});
 
-    const producer = new HighLevelProducer(client,{partitionerType: 3});
+    const producer = new Producer(client);
 
     producer.on('ready', async function() {
-      resolve(kafkaService(options,producer))
+      resolve(kafkaService(options,producer,client))
     });
     producer.on('error', function(err) {
       reject(new Error('kafka connection error'))
