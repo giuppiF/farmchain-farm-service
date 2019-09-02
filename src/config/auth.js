@@ -7,7 +7,7 @@ const authentication = (options) => {
   const {secret, repo} = options
   const getTokenFromHeaders = (req) => {
   const { headers: { authorization } } = req;
-    console.log("header? 1"+ authorization )
+    console.log("header? 1"+ req.headers )
 
     if(authorization && authorization.split(' ')[0] === 'Bearer') {
       return authorization.split(' ')[1];
