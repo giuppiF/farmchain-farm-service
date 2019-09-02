@@ -1,9 +1,9 @@
 const express = require('express')
-const morgan = require('morgan')
+const morganBody = require('morgan-body')
 const helmet = require('helmet')
 const bodyParser = require('body-parser');
 const formData = require("express-form-data");
-const cors = require("cors")
+const cors = require('cors')
 
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
@@ -19,9 +19,6 @@ const start  = (options) => {
             reject(new Error('Non è disponibile nessuna porta'))
         }
         const app = express()
-
-        // morgan gestisce il logging sul web server (formati dev, short ... )
-        app.use(morgan('dev'))
 
         // helmet aggiunge header di sicurezza
         app.use(helmet())
@@ -44,6 +41,8 @@ const start  = (options) => {
             reject(new Error('Something went wrong!, err:' + err))
             res.status(500).send('Something went wrong!, err' + err)
         })
+        
+        morganBody(app,{skip:function (req, res) { return res.statusCode < 400 }})
         
         const farmApi = require('../api/farms')(options)
         const lotsApi = require('../api/lots')(options)
