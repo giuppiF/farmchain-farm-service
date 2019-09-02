@@ -24,6 +24,7 @@ mediator.on('db.ready', async (db) => {
         kafkaSettings: config.kafkaSettings,
         repo: repo,
     })
+    console.log("auth: " + config.authSettings.JWTSecret);
     var auth = await config.authConfig.start({
         secret: config.authSettings.JWTSecret,
         repo: repo
