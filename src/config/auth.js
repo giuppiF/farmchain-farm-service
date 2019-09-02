@@ -3,6 +3,7 @@ const jwt = require('express-jwt');
 
 
 const authentication = (options) => { 
+
   const {secret, repo} = options
   const getTokenFromHeaders = (req) => {
   const { headers: { authorization } } = req;
@@ -15,6 +16,8 @@ const authentication = (options) => {
 
   var  isFarmAdmin = (req,res,next) => {
     var farmId = req.user.farm
+    console.log("nel token ho trovato "+farmId)
+    console.log("nella url ho trovato "+ req.params.farmID)
     farmId == req.params.farmID ?
       next()
     :
