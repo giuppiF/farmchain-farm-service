@@ -9,7 +9,7 @@ const authentication = (options) => {
   const { headers: { authorization } } = req;
     console.log("header? 1"+ authorization && authorization.split(' ')[0] === 'Bearer')
     console.log("header? 2 "+ authorization )
-    console.log("header? 3"+ uthorization.split(' ')[1])
+    console.log("header? 3"+ authorization.split(' ')[1])
     con
     if(authorization && authorization.split(' ')[0] === 'Bearer') {
       return authorization.split(' ')[1];
