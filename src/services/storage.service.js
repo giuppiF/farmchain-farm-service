@@ -50,10 +50,12 @@ const storageService = (options) => {
         }
         s3.deleteObject(params, function(err, data) {
           if (err){
+            console.log("file delete in error err")
             reject(err);  // error
           } 
           else
           {
+            console.log("file delete")
             resolve()                // deleted
           }     
         });
