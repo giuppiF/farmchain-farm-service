@@ -25,7 +25,7 @@ const authSettings = {
 const host = 'http://localhost:' + serverSettings.port
 
 const kafkaSettings = {
-  server:  'ec2-52-211-239-111.eu-west-1.compute.amazonaws.com:9092',
+  server:  process.env.KAFKA_HOST + ':' + process.env.KAFKA_PORT,
 };
 
 const swaggerOptions = {
