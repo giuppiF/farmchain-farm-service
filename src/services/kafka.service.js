@@ -17,7 +17,7 @@ const createProduct = async (repo,product) => {
   try{
     var farm = await repo.addProduct(product.farm._id,productData)
     farm ?
-      console.log('okkkk aggiorno farm ' + product.farm._id + "con prodotto " + productData.name)
+      console.log('Farm updated')
     :
       console.log('error, product not found')
   } catch (err) {
@@ -39,7 +39,7 @@ const updateProduct = async (repo,product) => {
   try{
     var farm = await repo.updateProduct(product.farm._id,product._id,productData)
     farm ?
-      console.log('okkkk')
+      console.log('Farm updated')
     :
       console.log('error, product not found')
   } catch (err) {
@@ -51,7 +51,7 @@ const deleteProduct = async (repo,product) => {
   try{
     var farm = await repo.deleteProduct(product.farm._id,product._id)
     farm ?
-      console.log('okkkk')
+      console.log('Farm deleted')
     :            
       console.log('error, product not found')
 } catch (err) {
