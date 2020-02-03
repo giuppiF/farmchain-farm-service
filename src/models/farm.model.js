@@ -35,7 +35,8 @@ const Joi = require('joi');
   var joiMediaSchema = Joi.object().keys({
     src: Joi.string(),
     thumbnail: Joi.string(),
-    type: Joi.string().valid('video','img'),
+    type: Joi.string().valid('video','image'),
+    muted: Joi.boolean().default(true)
 })  
 
 
